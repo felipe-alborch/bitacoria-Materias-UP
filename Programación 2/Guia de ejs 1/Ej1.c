@@ -7,9 +7,7 @@ cuadrado de la estatura
 #include <stdio.h>
 
 int main() {
-    float imc = 0;
-    float altura = 0;
-    float peso = 0;
+    float imc = 0, altura = 0, peso = 0;
 
     printf("Ingrese su peso: ");
     scanf("%f", &peso);

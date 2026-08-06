@@ -11,7 +11,7 @@ int main() {
     do {
         printf("Ingrese cuantos dias tiene el mes en curso: ");
         scanf("%d", &diasDelMes);
-    } while (diasDelMes < 1 || diasDelMes > 30);
+    } while (diasDelMes < 28 || diasDelMes > 30);
     
     
     float cotizaciones[diasDelMes];
