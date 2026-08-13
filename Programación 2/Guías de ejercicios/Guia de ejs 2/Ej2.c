@@ -10,9 +10,11 @@ b) Generar otro arreglo intercalando el número positivo con los números negati
 void cargarNumeros(int []);
 void ordenarArreglo(int []);
 void mostrarPrimerosCuatroNumerosMayores(int []);
+void intercalarArreglos(int [], int []);
+void mostrarElementos(int [], int);
 
 int main() {
-    int numeros[10];
+    int numeros[10], numerosIntercalados[10];
 
     printf("\n\nCARGANDO ARREGLO...\n");
     cargarNumeros(numeros);
@@ -20,8 +22,14 @@ int main() {
     printf("\n\nORDENANDO ARREGLO...");
     ordenarArreglo(numeros);
 
-    printf("\n\nMOSTRANDO LOS ELEMENTOS DEL ARREGLO...\n");
+    printf("\n\nMOSTRANDO LOS PRIMEROS CUATRO ELEMENTOS DEL ARREGLO...\n");
     mostrarPrimerosCuatroNumerosMayores(numeros);
+
+    printf("\n\nINTERCALANDO ELEMENTOS...");
+    intercalarArreglos(numeros, numerosIntercalados);
+
+    printf("\n\nMOSTRANDO LOS ELEMENTOS DEL NUEVO ARREGLO...\n");
+    mostrarElementos(numerosIntercalados, 10);
     
     return 0;
 }
@@ -50,6 +58,11 @@ void cargarNumeros(int numeros[]) {
     }
 }
 
+void mostrarElementos(int arreglo[], int longitud) {
+    for(int i = 0; i < longitud; i++)
+        printf("Mostrando elemento [%d]: %d\n", i, arreglo[i]);
+}
+
 void ordenarArreglo(int numeros[]) {
     int aux;
     
@@ -67,5 +80,29 @@ void ordenarArreglo(int numeros[]) {
 void mostrarPrimerosCuatroNumerosMayores(int numeros[]) {
     for(int i = 0; i < 4; i++) {
         printf("Mostrando elemento [%d]: %d\n", i, numeros[i]);
+    }
+}
+
+void intercalarArreglos(int numeros[], int numerosIntercalados[]) {
+    int contadorPrimerArreglo = 0, contadorSegundoArreglo = 0;
+
+    while(contadorPrimerArreglo < 10) {
+        if(numeros[contadorPrimerArreglo] < 0) {
+            numerosIntercalados[contadorSegundoArreglo] = numeros[contadorPrimerArreglo];
+            contadorSegundoArreglo += 1;
+        }
+
+        contadorPrimerArreglo += 1;
+    }
+
+    contadorPrimerArreglo = 0;
+
+    while(contadorPrimerArreglo < 5) {
+        if(numeros[contadorPrimerArreglo] > 0) {
+            numerosIntercalados[contadorSegundoArreglo] = numeros[contadorPrimerArreglo];
+            contadorSegundoArreglo += 1;
+        }
+
+        contadorPrimerArreglo += 1;
     }
 }

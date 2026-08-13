@@ -20,6 +20,7 @@ int cargarDatos(int [5], int [5], int [5], char [5][50]);
 void mostrarDatos(int [5], int [5], int [5], char [5][50], int);
 void calcularMayorVenta(int [], int [], char [][50], int);
 void porcentajePasajesVendidosPorCiudad(int [], char [][50], int);
+void ordenarArreglo(int [], int [], int [], char [][50], int);
 
 int main() {
     int diasDeVuelo[5], capacidadesDeLosAviones[5], cantidadesDePasajesVendidos[5];
@@ -36,7 +37,40 @@ int main() {
     printf("\n\nCALCULANDO EL PORCENTAJE DE PASAJES VENDIDOS POR CIUDAD...\n");
     porcentajePasajesVendidosPorCiudad(cantidadesDePasajesVendidos, ciudades, cantidadDatosCargados);
     
+    printf("\n\nORDENANDO LOS DATOS...");
+    ordenarArreglo(cantidadesDePasajesVendidos, diasDeVuelo, capacidadesDeLosAviones, ciudades, cantidadDatosCargados);
+
+    printf("\n\nMOSTRANDO LOS NUEVOS DATOS...\n");
+    mostrarDatos(diasDeVuelo, capacidadesDeLosAviones, cantidadesDePasajesVendidos, ciudades, cantidadDatosCargados);
+
     return 0;
+}
+
+void ordenarArreglo(int cantidadesDePasajesVendidos[], int diasDeVuelo[], int capacidadesDeLosAviones[], char ciudades[][50], int cantidadDatosCargados) {
+    int aux;
+    char auxCiudad[50];
+    
+    for(int i = 0; i < cantidadDatosCargados; i++) {
+        for(int j = 0; j < cantidadDatosCargados - 1; j++) {
+            if(cantidadesDePasajesVendidos[j] > cantidadesDePasajesVendidos[j+1]) {
+                aux = cantidadesDePasajesVendidos[j];
+                cantidadesDePasajesVendidos[j] = cantidadesDePasajesVendidos[j+1];
+                cantidadesDePasajesVendidos[j+1] = aux;
+
+                aux = diasDeVuelo[j];
+                diasDeVuelo[j] = diasDeVuelo[j+1];
+                diasDeVuelo[j+1] = aux;
+
+                aux = capacidadesDeLosAviones[j];
+                capacidadesDeLosAviones[j] = capacidadesDeLosAviones[j+1];
+                capacidadesDeLosAviones[j+1] = aux;
+
+                strcpy(auxCiudad, ciudades[j]);
+                strcpy(ciudades[j], ciudades[j+1]);
+                strcpy(ciudades[j+1], auxCiudad);
+            }
+        }
+    }
 }
 
 int cargarDatos(int diasDeVuelo[5], int capacidadesDeLosAviones[5], int cantidadesDePasajesVendidos[5], char ciudades[5][50]) {
