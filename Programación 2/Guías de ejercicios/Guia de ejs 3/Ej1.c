@@ -21,6 +21,8 @@ void promedioMultiplosDe5(int n, int matriz[][n]);
 void minimoElementoDeCadaFila(int n, int matriz[][n]);
 void mostrarDiagonalSecundaria(int n, int matriz[][n]);
 void verificarMatrizSimetrica(int n, int matriz[][n]);
+void sumatoriaDiagonalPrincipal(int n, int matriz[][n]);
+void mostrarElementosDebajoDiagonalPrincipal(int n, int matriz[][n]);
 
 int main() {
     int n;
@@ -41,6 +43,9 @@ int main() {
     printf("\n\nCALCULANDO SUMATORIA DE LA SEGUNDA FILA DE LA MATRIZ...\n");
     sumatoriaElementosSegundaFila(n, matriz);
 
+    printf("\n\nCALCULANDO LA SUMATORIA DE LA DIAGONAL PRINCIPAL...\n");
+    sumatoriaDiagonalPrincipal(n, matriz);
+
     printf("\n\nCALCULANDO EL MAYOR ELEMENTO DE LA SEGUNDA COLUMNA DE LA MATRIZ...\n");
     mayorElementoSegundaColumna(n, matriz);
     
@@ -52,6 +57,9 @@ int main() {
 
     printf("\n\nMOSTRANDO DIAGONAL SECUNDARIA...\n");
     mostrarDiagonalSecundaria(n, matriz);
+
+    printf("\n\nMOSTRANDO ELEMENTOS DEBAJO DE LA DIAGONAL PRINCIPAL...\n");
+    mostrarElementosDebajoDiagonalPrincipal(n, matriz);
 
     printf("\n\nVERIFICANDO SI LA MATRIZ ES SIMETRICA...\n");
     verificarMatrizSimetrica(n, matriz);
@@ -92,7 +100,7 @@ void mayorElementoSegundaColumna(int n, int matriz[][n]) {
     int mayor = matriz[0][1], posMayor = 0;
 
     for(int i = 1; i < n; i++) {
-        if(matriz[i][2] > mayor) {
+        if(matriz[i][1] > mayor) {
             mayor = matriz[i][1];
             posMayor = i;
         }
@@ -116,8 +124,13 @@ void promedioMultiplosDe5(int n, int matriz[][n]) {
         }
     }
     
-    promedio = (float) sumatoriaMultiplosDe5 / cantMultiplosDe5;
-    printf("\nEl promedio de los multiplos de 5 de la matriz es: %.2f", promedio);
+    if(cantMultiplosDe5 != 0) {
+        promedio = (float) sumatoriaMultiplosDe5 / cantMultiplosDe5;
+        printf("\nEl promedio de los multiplos de 5 de la matriz es: %.2f", promedio);
+    }
+    else {
+        printf("\nNo se ingresaron multiplos de 5.");
+    }
 }
 
 void sumatoriaDiagonalPrincipal(int n, int matriz[][n]) {
@@ -135,19 +148,16 @@ void sumatoriaDiagonalPrincipal(int n, int matriz[][n]) {
 }
 
 void minimoElementoDeCadaFila(int n, int matriz[][n]) {
-    int i, j = 0;
-    
-    for(i = 0; i < n; i++) {
-        int elementoMinimo = matriz[i][j];
 
-        for(j; j < n; j++) {
-            if(matriz[i][j] < elementoMinimo) {
+    for(int i = 0; i < n; i++) {
+        int elementoMinimo = matriz[i][0];
+
+        for(int j = 1; j < n; j++) {
+            if(matriz[i][j] < elementoMinimo)
                 elementoMinimo = matriz[i][j];
-            }
         }
 
-        printf("\nEl menor elemento de la fila [%d] es: %d", elementoMinimo);
-        j = 0;
+        printf("\nEl menor elemento de la fila [%d] es: %d", i, elementoMinimo);
     }
 }
 
@@ -179,4 +189,13 @@ void verificarMatrizSimetrica(int n, int matriz[][n]) {
         printf("La matriz es simetrica.");
     else
         printf("La matriz no es simetrica.");
+}
+
+void mostrarElementosDebajoDiagonalPrincipal(int n, int matriz[][n]) {
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            if(i > j) 
+                printf("Elemento [%d][%d]: %d\n", i, j, matriz[i][j]);
+        }
+    }
 }
