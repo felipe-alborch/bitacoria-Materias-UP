@@ -84,10 +84,10 @@ int cargarDatos(int numerosDeCuenta[], int tiposDeCuenta[], float saldosDisponib
 
     while (numeroDeCuenta != 0) {
         printf("Introduzca el nombre de la persona: ");
-        scanf("%19s", &nombre);
+        scanf("%s", nombre);
 
         printf("Introduzca el apellido de la persona: ");
-        scanf("%19s", &apellido);
+        scanf("%s", apellido);
     
         do {
             printf("Introduzca el tipo de cuenta: ");
@@ -216,10 +216,10 @@ void insertarElemento(int numerosDeCuenta[], int tiposDeCuenta[], float saldosDi
     } while (numeroDeCuenta < 0);
 
     printf("Introduzca el nombre de la persona: ");
-    scanf("%19s", &nombre);
+    scanf("%s", nombre);
 
     printf("Introduzca el apellido de la persona: ");
-    scanf("%19s", &apellido);
+    scanf("%s", apellido);
 
     do {
         printf("Introduzca el tipo de cuenta: ");

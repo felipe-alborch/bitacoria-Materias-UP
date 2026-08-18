@@ -88,7 +88,7 @@ int cargarDatos(int diasDeVuelo[5], int capacidadesDeLosAviones[5], int cantidad
         scanf("%d", &cantidadPasajesVendidos);
 
         printf("Ingresa la ciudad de destino: ");
-        scanf("%49s", ciudad);
+        scanf("%s", ciudad);
 
         diasDeVuelo[i] = diaVuelo;
         capacidadesDeLosAviones[i] = capacidadAvion;
@@ -99,7 +99,6 @@ int cargarDatos(int diasDeVuelo[5], int capacidadesDeLosAviones[5], int cantidad
 
         printf("Ingresa el dia del vuelo: ");
         scanf("%d", &diaVuelo);
-
     }
 
     return i;
@@ -115,7 +114,6 @@ void mostrarDatos(int diasDeVuelo[5], int capacidadesDeLosAviones[5], int cantid
 }
 
 void calcularMayorVenta(int diasDeVuelo[], int cantidadesDePasajesVendidos[], char ciudades[][50], int cantidadDatosCargados) {
-
     int mayorCantidad = 0;
     int diaMayor;
     char ciudadMayor[50];
