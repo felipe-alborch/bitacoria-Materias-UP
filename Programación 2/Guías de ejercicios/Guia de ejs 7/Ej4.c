@@ -1,8 +1,8 @@
 /*
-3) Ingresar una lista de enteros y calcular el promedio de sus valores, el número mayor y el número menor. 
-Resolver cada operación mediante una función independiente. 
-Considerar qué debe ocurrir si la lista está vacía y evitar utilizar un valor arbitrario, como 0, para inicializar el mayor 
-o el menor cuando podría producir un resultado incorrecto.
+Buscar un elemento por su valor. Crear una función que reciba la lista y un número ingresado por el usuario. 
+La función debe recorrer la lista y determinar si ese número existe. 
+Si aparece, informar su posición comenzando desde 1; si no aparece, indicar que no fue encontrado. 
+Como variante, contar cuántas veces aparece el valor buscado.
 */
 
 #include <stdio.h>
@@ -18,33 +18,20 @@ void mostrarLista(Nodo *lista);
 void liberarLista(Nodo *lista);
 Nodo *ingresarDatos(Nodo *lista);
 Nodo *insertarNodo(Nodo *lista, int valor);
-float calcularPromedio(Nodo *lista);
-int menorNumeroDeLaLista(Nodo *lista);
-int mayorNumeroDeLaLista(Nodo *lista);
+void buscarElemento(Nodo *lista);
 
 int main() {
     Nodo *lista = NULL;
-    int menor = 0, mayor = 0;
-    float promedio = 0;
 
     printf("\n\n--- INGRESANDO ELEMENTOS A LA LISTA ---\n\n");
     lista = ingresarDatos(lista);
-    
+
     if(lista != NULL) {
         printf("\n\n--- MOSTRANDO ELEMENTOS DE LA LISTA ---\n\n");
         mostrarLista(lista);
 
-        printf("\n\n--- CALCULANDO EL PROMEDIO DE LOS ELEMENTOS DE LA LISTA ---\n\n");
-        promedio = calcularPromedio(lista);
-        printf("El promedio de los elementos de la lista es: %.2f", promedio);
-
-        printf("\n\n--- CALCULANDO EL MENOR ELEMENTO DE LA LISTA ---\n\n");
-        menor = menorNumeroDeLaLista(lista);
-        printf("El menor elemento de la lista es: %d", menor);
-
-        printf("\n\n--- CALCULANDO EL MAYOR ELEMENTO DE LA LISTA ---\n\n");
-        mayor = mayorNumeroDeLaLista(lista);
-        printf("El mayor elemento de la lista es: %d", mayor);
+        printf("\n\n--- BUSCANDO UN ELEMENTO DE LA LISTA ---\n\n");
+        buscarElemento(lista);
     }
     else
         printf("No se ingresaron elementos en la lista para realizar las operaciones.");
@@ -121,45 +108,22 @@ void liberarLista(Nodo *lista) {
     }
 }
 
-float calcularPromedio(Nodo *lista) {
-    int contador = 0, acumulador = 0;
+void buscarElemento(Nodo *lista) {
     Nodo *actual = lista;
-    float promedio = 0;
+    int numeroBuscado, cantApariciones = 0, pos = 1;
+
+    printf("Inserte el elemento a buscar en la lista: ");
+    scanf("%d", &numeroBuscado);
 
     while(actual != NULL) {
-        contador += 1;
-        acumulador += actual->numero;
+        if(actual->numero == numeroBuscado) {
+            cantApariciones += 1;
+            printf("El elemento aparecio en la posicion [%d] \n", pos);
+        }
 
         actual = actual->siguiente;
+        pos += 1;
     }
 
-    promedio = (float) acumulador / contador;
-
-    return promedio;
-}
-
-int menorNumeroDeLaLista(Nodo *lista) {
-    Nodo *actual = lista, *menor = lista;
-
-    while(actual != NULL) {
-        if(actual->numero < menor->numero)
-            menor = actual;
-
-        actual = actual->siguiente;
-    }
-
-    return menor->numero;
-}
-
-int mayorNumeroDeLaLista(Nodo *lista) {
-    Nodo *actual = lista, *mayor = lista;
-
-    while(actual != NULL) {
-        if(actual->numero > mayor->numero)
-            mayor = actual;
-
-        actual = actual->siguiente;
-    }
-
-    return mayor->numero;
+    printf("\nEl numero [%d] aparecio un total de [%d] veces.", numeroBuscado, cantApariciones);
 }
