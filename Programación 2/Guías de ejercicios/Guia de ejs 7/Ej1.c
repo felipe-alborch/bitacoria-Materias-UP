@@ -55,42 +55,6 @@ void ingresarDatos(Nodo *lista) {
     lista->siguiente = NULL;
 }
 
-void ingresarDatos2(Nodo *lista) {
-    Nodo *aux = NULL;
-    
-    printf("Ingresa un numero: ");
-    scanf("%d", &lista->numero);
-
-    if(lista->numero == 0) {
-        lista->siguiente = NULL;
-        return;
-    }
-
-    lista->siguiente = (Nodo *) malloc(sizeof(Nodo));
-    ingresarDatos2(lista->siguiente);
-}
-
-/*Nodo *insertarNodo(Nodo *lista, int valor) {
-    Nodo *nuevo = malloc(sizeof(Nodo));
-
-    nuevo->numero = valor;
-    nuevo->siguiente = NULL;
-
-    if (lista == NULL) {
-        return nuevo;
-    }
-
-    Nodo *actual = lista;
-
-    while (actual->siguiente != NULL) {
-        actual = actual->siguiente;
-    }
-
-    actual->siguiente = nuevo;
-
-    return lista;
-}*/
-
 void mostrarLista(Nodo *lista) {
     int contador = 1;
 
@@ -110,4 +74,19 @@ void liberarLista(Nodo *lista) {
 
         lista = siguiente;
     }
+}
+
+void ingresarDatos2(Nodo *lista) {
+    Nodo *aux = NULL;
+    
+    printf("Ingresa un numero: ");
+    scanf("%d", &lista->numero);
+
+    if(lista->numero == 0) {
+        lista->siguiente = NULL;
+        return;
+    }
+
+    lista->siguiente = (Nodo *) malloc(sizeof(Nodo));
+    ingresarDatos2(lista->siguiente);
 }

@@ -23,13 +23,11 @@ typedef struct AlumnoNombre {
     struct AlumnoNombre *siguiente;
 } AlumnoNombre;
 
-Alumno *insertarNodo(Alumno *lista, char nombre[30], int edad);
-Alumno *cargarAlumno(Alumno *lista);
+void cargarAlumno(Alumno *lista);
 void mostrarLista(Alumno *lista);
-Alumno *generarListaDeAlumnosDeterminadaEdad(Alumno *listaAlumnosEntre40y50, Alumno *lista, int limiteInferior, int limiteSuperior);
 void promedioEdadLista(Alumno *lista);
+Alumno *generarListaDeAlumnosDeterminadaEdad(Alumno *listaAlumnosEntre40y50, Alumno *lista, int limiteInferior, int limiteSuperior);
 int cantAlumnosEntre20y35(Alumno *lista);
-AlumnoNombre *insertarNombre(AlumnoNombre *lista, char nombre[30]);
 AlumnoNombre *generarListaMenoresDe30(AlumnoNombre *listaMenoresDe30, Alumno *lista);
 void mostrarListaNombres(AlumnoNombre *lista);
 
@@ -38,28 +36,29 @@ int main() {
     int contEdadesEntre20y35;
     AlumnoNombre *listaMenoresDe30 = NULL;
 
-    lista = (Alumno *) sizeof(Alumno);
-    listaAlumnosEntre40y50 = (Alumno *) sizeof(Alumno);
-    listaMenoresDe30 = (AlumnoNombre *) sizeof(AlumnoNombre);
+    lista = (Alumno *) malloc(sizeof(Alumno));
+    listaAlumnosEntre40y50 = (Alumno *) malloc(sizeof(Alumno));
+    listaMenoresDe30 = (AlumnoNombre *) malloc(sizeof(AlumnoNombre));
 
     printf("\n\n--- INGRESANDO ELEMENTOS A LA LISTA ---\n\n");
-    lista = cargarAlumno(lista);
+    cargarAlumno(lista);
 
     if(lista != NULL) {
-        printf("\n\n--- MOSTRANDO ELEMENTOS DE LA LISTA ---\n\n");
+        printf("\n\n--- MOSTRANDO ELEMENTOS DE LA LISTA ---\n");
         mostrarLista(lista);
+        promedioEdadLista(lista);
 
-        printf("\n\n--- GENERANDO LISTA DE ALUMNOS ENTRE 40 Y 50 ANIOS ---\n\n");
+        printf("\n\n--- GENERANDO LISTA DE ALUMNOS ENTRE 40 Y 50 ANIOS ---\n");
         listaAlumnosEntre40y50 = generarListaDeAlumnosDeterminadaEdad(listaAlumnosEntre40y50, lista, 40, 50);
         mostrarLista(listaAlumnosEntre40y50);
 
-        printf("\n\n--- GENERANDO LISTA DE ALUMNOS MENORES DE 30 ANIOS ---\n\n");
+        printf("\n\n--- GENERANDO LISTA DE ALUMNOS MENORES DE 30 ANIOS ---\n");
         listaMenoresDe30 = generarListaMenoresDe30(listaMenoresDe30, lista);
         mostrarListaNombres(listaMenoresDe30);
 
-        printf("\n\n--- CALCULANDO LA CANTIDAD DE ALUMNOS DE EDAD ENTRE 20 Y 35 ---\n\n");
+        printf("\n\n--- CALCULANDO LA CANTIDAD DE ALUMNOS DE EDAD ENTRE 20 Y 35 ---\n");
         contEdadesEntre20y35 = cantAlumnosEntre20y35(lista);
-        printf("La cantidad de alumnos entre 20 y 35 anios es: %d\n", contEdadesEntre20y35);
+        printf("La cantidad de alumnos entre 20 y 35 anios es: %d\n\n", contEdadesEntre20y35);
     }
     else
         printf("No hay datos sobre los cuales operar.");
@@ -67,89 +66,92 @@ int main() {
     return 0;
 }
 
-Alumno *cargarAlumno(Alumno *lista) {
+void cargarAlumno(Alumno *lista) {
     char nombre[30];
-    int edad;
 
     printf("Ingrese el nombre del alumno: ");
     scanf("%s", nombre);
 
     while(strcmp(nombre, "FIN") != 0 && strcmp(nombre, "fin") != 0) {
-        printf("Ingrese la edad del alumno: ");
-        scanf("%d", &edad);
+        strcpy(lista->nombre, nombre);
 
-        lista = insertarNodo(lista, nombre, edad);
+        printf("Ingrese la edad del alumno: ");
+        scanf("%d", &lista->edad);
 
         printf("Ingrese el nombre del alumno: ");
         scanf("%s", nombre);
+
+        if(strcmp(nombre, "FIN") != 0 && strcmp(nombre, "fin") != 0) {
+            lista->siguiente = (Alumno *) malloc(sizeof(Alumno));
+            lista = lista->siguiente;
+        }
     }
 
-    return lista;
-}
-
-Alumno *insertarNodo(Alumno *lista, char nombre[30], int edad) {
-    Alumno *nuevo = (Alumno *) malloc(sizeof(Alumno));
-
-    if (nuevo == NULL) {
-        printf("No se pudo reservar memoria.\n");
-        return lista;
-    }
-
-    nuevo->edad = edad;
-    strcpy(nuevo->nombre, nombre);
-    nuevo->siguiente = NULL;
-
-    if (lista == NULL)
-        return nuevo;
-
-    Alumno *actual = lista;
-
-    while (actual->siguiente != NULL)
-        actual = actual->siguiente;
-
-    actual->siguiente = nuevo;
-
-    return lista;
+    lista->siguiente = NULL;
 }
 
 void mostrarLista(Alumno *lista) {
-    Alumno *actual = lista;
-    int contador = 0;
+    int contador = 1;
 
-    while(actual != NULL) {
-        printf("Nombre del alumno [%d]: %s\n", contador, actual->nombre);
-        printf("Edad del alumno [%d]: %d\n\n", contador, actual->edad);
+    while(lista != NULL) {
+        printf("\n-- Alumno [%d] --\n", contador);
+        printf("Nombre: %s\n", lista->nombre);
+        printf("Edad: %d\n", lista->edad);
 
+        lista = lista->siguiente;
         contador += 1;
-        actual = actual->siguiente;
     }
 }
 
 void promedioEdadLista(Alumno *lista) {
-    Alumno *actual = lista;
     int contador = 0, acumulador = 0;
     float promedio = 0;
 
-    while(actual != NULL) {
+    while(lista != NULL) {
         contador += 1;
-        acumulador += actual->edad;
-        actual = actual->siguiente;
+        acumulador += lista->edad;
+        lista = lista->siguiente;
     }
 
     promedio = (float) acumulador / contador;
-    printf("El promedio de edad de los alumnos de la lista es: %.2f", promedio);    
+    printf("\nEl promedio de edad de los alumnos de la lista es: %.2f", promedio);    
 }
 
 Alumno *generarListaDeAlumnosDeterminadaEdad(Alumno *listaAlumnosEntre40y50, Alumno *lista, int limiteInferior, int limiteSuperior) {
-    Alumno *actual = lista;
+    Alumno *aux = listaAlumnosEntre40y50;
 
-    while(actual != NULL) {
-        if(actual->edad <= limiteSuperior && actual->edad >= limiteInferior)
-            listaAlumnosEntre40y50 = insertarNodo(listaAlumnosEntre40y50, actual->nombre, actual->edad);
+    // Busco el primer alumno que cumpla la condición
+    while(lista != NULL && (lista->edad < limiteInferior || lista->edad > limiteSuperior))
+        lista = lista->siguiente;
 
-        actual = actual->siguiente;
+    // Si llegué al final, no había ningún alumno que cumpliera
+    if(lista == NULL) {
+        free(listaAlumnosEntre40y50);
+        return NULL;
     }
-    
+
+    // Cargo el primer nodo de la nueva lista
+    strcpy(aux->nombre, lista->nombre);
+    aux->edad = lista->edad;
+    aux->siguiente = NULL;
+
+    lista = lista->siguiente;
+
+    // Busco los siguientes alumnos que cumplan
+    while(lista != NULL) {
+        if(lista->edad >= limiteInferior && lista->edad <= limiteSuperior) {
+            aux->siguiente = (Alumno *) malloc(sizeof(Alumno));
+           
+            aux = aux->siguiente;
+
+            strcpy(aux->nombre, lista->nombre);
+            aux->edad = lista->edad;
+            aux->siguiente = NULL;
+        }
+
+        lista = lista->siguiente;
+    }
+
     return listaAlumnosEntre40y50;
 }
 
@@ -168,47 +170,48 @@ int cantAlumnosEntre20y35(Alumno *lista) {
 }
 
 AlumnoNombre *generarListaMenoresDe30(AlumnoNombre *listaMenoresDe30, Alumno *lista) {
-    Alumno *actual = lista;
+    AlumnoNombre *aux = listaMenoresDe30;
 
-    while (actual != NULL) {
-        if (actual->edad < 30)
-            listaMenoresDe30 = insertarNombre(listaMenoresDe30, actual->nombre);
+    // Busco el primer alumno menor de 30
+    while(lista != NULL && lista->edad >= 30)
+        lista = lista->siguiente;
 
-        actual = actual->siguiente;
+    // Si no encontré ninguno
+    if(lista == NULL) {
+        free(listaMenoresDe30);
+        return NULL;
     }
+
+    // Cargo el primer nombre
+    strcpy(aux->nombre, lista->nombre);
+
+    lista = lista->siguiente;
+
+    // Busco los demás
+    while(lista != NULL) {
+        if(lista->edad < 30) {
+            aux->siguiente = (AlumnoNombre *) malloc(sizeof(AlumnoNombre));
+            aux = aux->siguiente;
+
+            strcpy(aux->nombre, lista->nombre);
+        }
+
+        lista = lista->siguiente;
+    }
+
+    aux->siguiente = NULL;
 
     return listaMenoresDe30;
 }
 
-AlumnoNombre *insertarNombre(AlumnoNombre *lista, char nombre[30]) {
-    AlumnoNombre *nuevo = malloc(sizeof(AlumnoNombre));
-
-    if (nuevo == NULL) {
-        printf("No se pudo reservar memoria.\n");
-        return lista;
-    }
-
-    strcpy(nuevo->nombre, nombre);
-    nuevo->siguiente = NULL;
-
-    if (lista == NULL)
-        return nuevo;
-
-    AlumnoNombre *actual = lista;
-
-    while (actual->siguiente != NULL)
-        actual = actual->siguiente;
-
-    actual->siguiente = nuevo;
-
-    return lista;
-}
-
 void mostrarListaNombres(AlumnoNombre *lista) {
-    AlumnoNombre *actual = lista;
+    int contador = 1;
 
-    while (actual != NULL) {
-        printf("Nombre: %s\n", actual->nombre);
-        actual = actual->siguiente;
-    }
+    while(lista != NULL) {
+            printf("\n-- Alumno [%d] --\n", contador);
+            printf("Nombre: %s\n", lista->nombre);
+
+            lista = lista->siguiente;
+            contador += 1;
+        }
 }
