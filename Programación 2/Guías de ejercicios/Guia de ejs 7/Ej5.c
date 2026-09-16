@@ -14,16 +14,16 @@ typedef struct Nodo {
 
 void mostrarLista(Nodo *lista);
 void liberarLista(Nodo *lista);
-Nodo *ingresarDatos(Nodo *lista);
-Nodo *insertarNodo(Nodo *lista, int valor);
+void ingresarDatos(Nodo *lista);
 Nodo *insertarNodoAlInicio(Nodo *lista, int valor);
 Nodo *agregarElementoExtra(Nodo *lista);
 
 int main() {
     Nodo *lista = NULL;
+    lista = (Nodo *) malloc(sizeof(Nodo));
 
     printf("\n\n--- INGRESANDO ELEMENTOS A LA LISTA ---\n\n");
-    lista = ingresarDatos(lista);
+    ingresarDatos(lista);
 
     printf("\n\n--- MOSTRANDO ELEMENTOS DE LA LISTA ---\n\n");
     mostrarLista(lista);
@@ -40,46 +40,46 @@ int main() {
     return 0;
 }
 
-Nodo *ingresarDatos(Nodo *lista) {
+void ingresarDatos(Nodo *lista) {
     int numero;
-    
+
     printf("Ingresa un numero: ");
     scanf("%d", &numero);
 
     while(numero != 0) {
-        lista = insertarNodo(lista, numero);
-        
+        lista->numero = numero;
+
         printf("Ingresa un numero: ");
         scanf("%d", &numero);
+
+        if(numero != 0) {
+            lista->siguiente = (Nodo *) malloc(sizeof(Nodo));
+            lista = lista->siguiente;
+        }
     }
 
-    return lista;
+    lista->siguiente = NULL;
 }
 
-Nodo *insertarNodo(Nodo *lista, int valor) {
-    Nodo *nuevo = malloc(sizeof(Nodo));
+void mostrarLista(Nodo *lista) {
+    int contador = 1;
 
-    if (nuevo == NULL) {
-        printf("No se pudo reservar memoria.\n");
-        return lista;
+    while(lista != NULL) {
+        printf("Numero [%d]: %d\n", contador, lista->numero);
+        lista = lista->siguiente;
+
+        contador += 1;
     }
+}
 
-    nuevo->numero = valor;
-    nuevo->siguiente = NULL;
+void liberarLista(Nodo *lista) {
+    while (lista != NULL) {
+        Nodo *siguiente = lista->siguiente;
 
-    if (lista == NULL) {
-        return nuevo;
+        free(lista);
+
+        lista = siguiente;
     }
-
-    Nodo *actual = lista;
-
-    while (actual->siguiente != NULL) {
-        actual = actual->siguiente;
-    }
-
-    actual->siguiente = nuevo;
-
-    return lista;
 }
 
 Nodo *insertarNodoAlInicio(Nodo *lista, int valor) {
@@ -94,30 +94,6 @@ Nodo *insertarNodoAlInicio(Nodo *lista, int valor) {
     nuevo->siguiente = lista;
 
     return nuevo;
-}
-
-void mostrarLista(Nodo *lista) {
-    Nodo *actual = lista;
-    int contador = 1;
-
-    while (actual != NULL) {
-        printf("Numero [%d]: %d\n", contador, actual->numero);
-        actual = actual->siguiente;
-
-        contador += 1;
-    }
-}
-
-void liberarLista(Nodo *lista) {
-    Nodo *actual = lista;
-
-    while (actual != NULL) {
-        Nodo *siguiente = actual->siguiente;
-
-        free(actual);
-
-        actual = siguiente;
-    }
 }
 
 Nodo *agregarElementoExtra(Nodo *lista) {

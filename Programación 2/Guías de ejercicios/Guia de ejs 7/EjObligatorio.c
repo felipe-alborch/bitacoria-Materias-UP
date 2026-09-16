@@ -38,6 +38,10 @@ int main() {
     int contEdadesEntre20y35;
     AlumnoNombre *listaMenoresDe30 = NULL;
 
+    lista = (Alumno *) sizeof(Alumno);
+    listaAlumnosEntre40y50 = (Alumno *) sizeof(Alumno);
+    listaMenoresDe30 = (AlumnoNombre *) sizeof(AlumnoNombre);
+
     printf("\n\n--- INGRESANDO ELEMENTOS A LA LISTA ---\n\n");
     lista = cargarAlumno(lista);
 
@@ -84,7 +88,7 @@ Alumno *cargarAlumno(Alumno *lista) {
 }
 
 Alumno *insertarNodo(Alumno *lista, char nombre[30], int edad) {
-    Alumno *nuevo = malloc(sizeof(Alumno));
+    Alumno *nuevo = (Alumno *) malloc(sizeof(Alumno));
 
     if (nuevo == NULL) {
         printf("No se pudo reservar memoria.\n");

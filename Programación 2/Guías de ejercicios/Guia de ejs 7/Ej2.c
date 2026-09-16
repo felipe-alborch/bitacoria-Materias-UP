@@ -15,8 +15,7 @@ typedef struct Nodo {
 
 void mostrarLista(Nodo *lista);
 void liberarLista(Nodo *lista);
-Nodo *ingresarDatos(Nodo *lista);
-Nodo *insertarNodo(Nodo *lista, int valor);
+void ingresarDatos(Nodo *lista);
 int calcularCantidadDeNodos(Nodo *lista);
 int sumatoriaValores(Nodo *lista);
 
@@ -24,8 +23,10 @@ int main() {
     Nodo *lista = NULL;
     int cantNodos = 0, sumatoriaNumeros = 0;
 
+    lista = (Nodo *) malloc(sizeof(Nodo));
+
     printf("\n\n--- INGRESANDO ELEMENTOS A LA LISTA ---\n\n");
-    lista = ingresarDatos(lista);
+    ingresarDatos(lista);
 
     printf("\n\n--- MOSTRANDO ELEMENTOS DE LA LISTA ---\n\n");
     mostrarLista(lista);
@@ -44,91 +45,65 @@ int main() {
     return 0;
 }
 
-Nodo *ingresarDatos(Nodo *lista) {
+void ingresarDatos(Nodo *lista) {
     int numero;
-    
+
     printf("Ingresa un numero: ");
     scanf("%d", &numero);
 
     while(numero != 0) {
-        lista = insertarNodo(lista, numero);
-        
+        lista->numero = numero;
+
         printf("Ingresa un numero: ");
         scanf("%d", &numero);
+
+        if(numero != 0) {
+            lista->siguiente = (Nodo *) malloc(sizeof(Nodo));
+            lista = lista->siguiente;
+        }
     }
 
-    return lista;
-}
-
-Nodo *insertarNodo(Nodo *lista, int valor) {
-    Nodo *nuevo = malloc(sizeof(Nodo));
-
-    if (nuevo == NULL) {
-        printf("No se pudo reservar memoria.\n");
-        return lista;
-    }
-
-    nuevo->numero = valor;
-    nuevo->siguiente = NULL;
-
-    if (lista == NULL) {
-        return nuevo;
-    }
-
-    Nodo *actual = lista;
-
-    while (actual->siguiente != NULL) {
-        actual = actual->siguiente;
-    }
-
-    actual->siguiente = nuevo;
-
-    return lista;
+    lista->siguiente = NULL;
 }
 
 void mostrarLista(Nodo *lista) {
-    Nodo *actual = lista;
     int contador = 1;
 
-    while (actual != NULL) {
-        printf("Numero [%d]: %d\n", contador, actual->numero);
-        actual = actual->siguiente;
+    while(lista != NULL) {
+        printf("Numero [%d]: %d\n", contador, lista->numero);
+        lista = lista->siguiente;
 
         contador += 1;
     }
 }
 
 void liberarLista(Nodo *lista) {
-    Nodo *actual = lista;
+    while (lista != NULL) {
+        Nodo *siguiente = lista->siguiente;
 
-    while (actual != NULL) {
-        Nodo *siguiente = actual->siguiente;
+        free(lista);
 
-        free(actual);
-
-        actual = siguiente;
+        lista = siguiente;
     }
 }
 
 int calcularCantidadDeNodos(Nodo *lista) {
     int contador = 0;
-    Nodo *actual = lista;
 
-    while(actual != NULL) {
+    while(lista != NULL) {
         contador += 1;
-        actual = actual->siguiente;
+        lista = lista->siguiente;
     }
 
     return contador;
 }
 
 int sumatoriaValores(Nodo *lista) {
-    Nodo *actual = lista;
     int acumulador = 0;
 
-    while(actual != NULL) {
-        acumulador += actual->numero;
-        actual = actual->siguiente;
+    while(lista != NULL) {
+        acumulador += lista->numero;
+        lista = lista->siguiente;
     }
 
     return acumulador;
