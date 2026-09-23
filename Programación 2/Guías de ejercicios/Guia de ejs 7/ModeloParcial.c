@@ -13,7 +13,10 @@ typedef struct Partido {
 int cargarLista(Partido *lista);
 void mostrarLista(Partido *lista);
 void insertarNodoEspecial(Partido *lista);
-Partido *eliminar_InsertarElementos(Partido *lista, Partido *listaCandidatosConMenosDe30Votos);
+Partido *conversionCandidatosConMenosDe30Votos(Partido *lista, Partido *listaCandidatosConMenosDe30Votos);
+Partido *eliminarCabezal(Partido *lista);
+void eliminarNodo(Partido *anterior);
+Partido *insertarElemento(Partido *destino, Partido *origen);
 
 int main() {
     Partido *lista = NULL, *listaCandidatosConMenosDe30Votos = NULL;
@@ -32,12 +35,14 @@ int main() {
         printf("\n\n--- INSERTANDO NODOS ESPECIALES EN LA LISTA ---\n");
         insertarNodoEspecial(lista);
         mostrarLista(lista);
-        
 
-        printf("\n\n--- HACIENDO PUNT C ---\n");
-        lista = eliminar_InsertarElementos(lista, listaCandidatosConMenosDe30Votos);
+        printf("\n--- HACIENDO PUNTO C ---\n");
+        lista = conversionCandidatosConMenosDe30Votos(lista, listaCandidatosConMenosDe30Votos);
+        
+        printf("\n\n--- MOSTRANDO COMO QUEDO LA LISTA ORIGINAL ---\n");
         mostrarLista(lista);
-        printf("\n\n");
+
+        printf("\n\n--- MOSTRANDO COMO QUEDO LA NUEVA LISTA ---\n");
         mostrarLista(listaCandidatosConMenosDe30Votos);
     }
     else
@@ -123,45 +128,72 @@ void insertarNodoEspecial(Partido *lista) {
     anterior->siguiente = nodoEspecial;
 }
 
-Partido *eliminar_InsertarElementos(Partido *lista, Partido *listaCandidatosConMenosDe30Votos) {
-    Partido *actual = lista, *anterior = NULL, *aux = NULL, *actualNuevaLista = listaCandidatosConMenosDe30Votos;
+Partido *conversionCandidatosConMenosDe30Votos(Partido *lista, Partido *listaCandidatosConMenosDe30Votos) {
+    Partido *actual = NULL, *actualNuevaLista = listaCandidatosConMenosDe30Votos;
 
-    while(actual->numeroLista != 0) {
-        if(actual->votosObtenidos < 30) {
-            // Copiar a la nueva lista
-            actualNuevaLista->numeroLista = actual->numeroLista;
-            strcpy(actualNuevaLista->nombrePartido, actual->nombrePartido);
-            strcpy(actualNuevaLista->candidatoPrincipal, actual->candidatoPrincipal);
-            actualNuevaLista->votosObtenidos = actual->votosObtenidos;
+    /*
+        PRIMER CASO:
+        Eliminar elementos desde el cabezal.
+    */
 
-            actualNuevaLista->siguiente = (Partido *) malloc(sizeof(Partido));
-            actualNuevaLista = actualNuevaLista->siguiente;
+    while(lista->siguiente != NULL && lista->votosObtenidos < 30) {
+        // Copiamos a la nueva lista
+        actualNuevaLista = insertarElemento(actualNuevaLista, lista);
 
-            // Eliminar de la lista original
-            aux = actual;
-
-            // Caso 1: estoy eliminando el primer nodo
-            if(anterior == NULL) {
-                lista = actual->siguiente;
-                actual = actual->siguiente;
-            }
-            // Caso 2: estoy eliminando cualquier otro nodo
-            else {
-                anterior->siguiente = actual->siguiente;
-                actual = actual->siguiente;
-            }
-
-            free(aux);
-        }
-        else {
-            anterior = actual;
-            actual = actual->siguiente;
-        }
+        // Eliminamos el cabezal
+        lista = eliminarCabezal(lista);
     }
 
-    // Nodo final de la nueva lista
+    /*
+        SEGUNDO CASO:
+        Eliminar elementos del resto de la lista.
+    */
+
+    actual = lista;
+
+    while(actual->siguiente != NULL && actual->siguiente->numeroLista != 0) {
+        if(actual->siguiente->votosObtenidos < 30) {
+            // Copiamos a la nueva lista
+            actualNuevaLista = insertarElemento(actualNuevaLista, actual->siguiente);
+
+            // Eliminamos actual->siguiente
+            eliminarNodo(actual);
+        }
+        else
+            actual = actual->siguiente;
+    }
+
+    // Cerramos la nueva lista
     actualNuevaLista->numeroLista = 0;
     actualNuevaLista->siguiente = NULL;
 
     return lista;
+}
+
+Partido *eliminarCabezal(Partido *lista) {
+    Partido *aux = lista;
+
+    lista = lista->siguiente;
+    free(aux);
+
+    return lista;
+}
+
+void eliminarNodo(Partido *anterior) {
+    Partido *aux = anterior->siguiente;
+
+    anterior->siguiente = aux->siguiente;
+
+    free(aux);
+}
+
+Partido *insertarElemento(Partido *destino, Partido *origen) {
+    destino->numeroLista = origen->numeroLista;
+    strcpy(destino->nombrePartido, origen->nombrePartido);
+    strcpy(destino->candidatoPrincipal, origen->candidatoPrincipal);
+    destino->votosObtenidos = origen->votosObtenidos;
+
+    destino->siguiente = (Partido *) malloc(sizeof(Partido));
+
+    return destino->siguiente;
 }
