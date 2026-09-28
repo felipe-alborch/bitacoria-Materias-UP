@@ -93,6 +93,7 @@ int main() {
             printf("\t- 5: INSERTAR NODOS ESPECIALES.\n");
             printf("\t- 6: CANCELAR RESERVA.\n");
             printf("\t- 0: SALIR DEL MENU.\n");
+            printf("Opcion: ");
             scanf("%d", &opcion);
         } 
     }
@@ -212,6 +213,8 @@ cliente *generarListaAdicional(cliente *lista, cliente *listaAdicional) {
         lista = lista->siguiente;
     }
 
+    aux->siguiente = NULL;
+
     return listaAdicional;
 }
 
@@ -254,7 +257,7 @@ cliente *insertarCabezal(cliente *lista) {
 }
 
 void insertarEnResto(cliente *actual, cliente *anterior) {
-    cliente *nuevo;
+    cliente *nuevo = NULL;
 
     nuevo = (cliente *) malloc(sizeof(cliente));
 
