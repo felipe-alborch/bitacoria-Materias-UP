@@ -15,9 +15,15 @@ int cargarLista(alumno *lista);
 void mostrarLista(alumno *lista);
 alumno *generarListaEstudiantesIA(alumno *lista, alumno *listaAlumnosIA);
 void porcentajeAlumnosEnSeguridad(alumno *lista);
+alumno *quitarAlumnosQueDejanCarrera(alumno *lista);
+alumno *eliminarCabezalLista(alumno *lista);
+void eliminarCuerpoLista(alumno *actual, alumno *anterior);
+alumno *insertarNodoEspecial(alumno *lista);
+alumno *insertarCabezal(alumno *lista);
+void insertarCuerpo(alumno *actual, alumno *anterior);
 
 int main() {
-    int cantElementos;
+    int cantElementos, opcion;
     alumno *lista = NULL, *listaAlumnosIA = NULL;
 
     lista = (alumno *) malloc(sizeof(alumno));  
@@ -27,12 +33,54 @@ int main() {
     cantElementos = cargarLista(lista);
 
     if(cantElementos > 0) {
-        printf("\n\n--- MOSTRANDO LA LISTA ---\n");
-        mostrarLista(lista);
+        printf("\n\nSeleccione una opcion... \n");
+        printf("\t- 1: MOSTRAR LISTA.\n");
+        printf("\t- 2: GENERAR LISTA CON ALUMNOS QUE ESTUDIAN INTELIGENCIA ARTIFICIAL.\n");
+        printf("\t- 3: ELIMINAR ALUMNO QUE DEJA CARRERA.\n");
+        printf("\t- 4: INSERTAR NODO ESPECIAL.\n");
+        printf("\t- 0: SALIR DEL MENU.\n");
+        printf("Opcion: ");
+        scanf("%d", &opcion); 
 
-        printf("\n\n--- GENERANDO NUEVA LISTA DE ALUMNOS QUE ESTUDIAN INTELIGENCIA ARTIFICIAL ---\n");
-        listaAlumnosIA = generarListaEstudiantesIA(lista, listaAlumnosIA);
-        mostrarLista(listaAlumnosIA);
+        while(opcion != 0) {
+            switch(opcion) {
+                case 1:
+                    printf("\n\n--- MOSTRANDO LA LISTA ---\n");
+                    mostrarLista(lista);
+                    break;
+                
+                case 2:
+                    printf("\n\n--- GENERANDO NUEVA LISTA DE ALUMNOS QUE ESTUDIAN INTELIGENCIA ARTIFICIAL ---\n");
+                    listaAlumnosIA = generarListaEstudiantesIA(lista, listaAlumnosIA);
+                    mostrarLista(listaAlumnosIA);
+                    break;
+
+                case 3:
+                    printf("\n\n--- ELIMINANDO ALUMNO QUE DEJA LA CARRERA ---\n");
+                    lista = quitarAlumnosQueDejanCarrera(lista);
+                    mostrarLista(lista);
+                    break;
+
+                case 4:
+                    printf("\n\n--- INSERTANDO NODO ESPECIAL ---\n");
+                    lista = insertarNodoEspecial(lista);
+                    mostrarLista(lista);
+                    break;
+                
+                default:
+                    printf("Opcion no reconocida.\n");
+                    break;
+            }
+
+            printf("\n\nSeleccione una opcion... \n");
+            printf("\t- 1: MOSTRAR LISTA.\n");
+            printf("\t- 2: GENERAR LISTA CON ALUMNOS QUE ESTUDIAN INTELIGENCIA ARTIFICIAL.\n");
+            printf("\t- 3: ELIMINAR ALUMNO QUE DEJA CARRERA.\n");
+            printf("\t- 4: INSERTAR NODO ESPECIAL.\n");
+            printf("\t- 0: SALIR DEL MENU.\n");
+            printf("Opcion: ");
+            scanf("%d", &opcion); 
+        }
     }
     else
         printf("\nNo se ingresaron elementos.\n\n");
@@ -133,4 +181,107 @@ void porcentajeAlumnosEnSeguridad(alumno *lista) {
 
     promedio = (float) totalAlumnos / totalAlumnosSeguridad;
     printf("El promedio de alumnos que elijen estudiar Seguridad es: %.2f.", promedio);
+}
+
+alumno *quitarAlumnosQueDejanCarrera(alumno *lista) {
+    int legajoAEliminar;
+    alumno *actual = NULL, *anterior = NULL;
+
+    printf("Ingrese el legajo del alumno que abandono la carera: ");
+    scanf("%d", &legajoAEliminar);
+
+    if(lista->siguiente != NULL && lista->NumeroLegajo == legajoAEliminar) {
+        lista = eliminarCabezalLista(lista);
+
+        return lista;
+    }
+
+    anterior = lista;
+    actual = lista->siguiente;
+
+    while(actual->siguiente != NULL && actual->NumeroLegajo != legajoAEliminar) {
+        anterior = actual;
+        actual = actual->siguiente;
+    }
+
+    if(actual->NumeroLegajo == legajoAEliminar)
+        eliminarCuerpoLista(actual, anterior);
+    else
+        printf("No se encontro el alumno que desea eliminar.");
+
+    return lista;
+}
+
+alumno *eliminarCabezalLista(alumno *lista) {
+    alumno *aux = lista;
+
+    lista = lista->siguiente;
+    free(aux);
+
+    return lista;
+}
+
+void eliminarCuerpoLista(alumno *actual, alumno *anterior) {
+    anterior->siguiente = actual->siguiente;
+
+    free(actual);
+}
+
+alumno *insertarNodoEspecial(alumno *lista) {
+    int legajoABuscar;
+    alumno *actual = NULL, *anterior = NULL;
+
+    printf("Inserte el numero de legajo donde se requiera poner el nodo especial: ");
+    scanf("%d", &legajoABuscar);
+
+    if(lista->siguiente != NULL && lista->NumeroLegajo == legajoABuscar) {
+        lista = insertarCabezal(lista);
+
+        return lista;
+    }
+
+    anterior = lista;
+    actual = lista->siguiente;
+
+    while(actual->siguiente != NULL && actual->NumeroLegajo != legajoABuscar) {
+        anterior = actual;
+        actual = actual->siguiente;
+    }
+
+    if(actual->NumeroLegajo == legajoABuscar)
+        insertarCuerpo(actual, anterior);
+    else
+        printf("No se encontro el alumno.");
+
+    return lista;
+}
+
+alumno *insertarCabezal(alumno *lista) {
+    alumno *nuevo = NULL;
+
+    nuevo = (alumno *) malloc(sizeof(alumno));
+    
+    nuevo->NumeroLegajo = 9999;
+    strcpy(nuevo->nombre, "PEPE");
+    nuevo->edad = 99;
+    strcpy(nuevo->carrera, "Inteligencia");
+    nuevo->anioQueEstaCursando = 0;
+    nuevo->siguiente = lista;
+
+    return nuevo;
+}
+
+void insertarCuerpo(alumno *actual, alumno *anterior) {
+    alumno *nuevo = NULL;
+
+    nuevo = (alumno *) malloc(sizeof(alumno));
+    
+    nuevo->NumeroLegajo = 9999;
+    strcpy(nuevo->nombre, "PEPE");
+    nuevo->edad = 99;
+    strcpy(nuevo->carrera, "Inteligencia");
+    nuevo->anioQueEstaCursando = 0;
+    
+    nuevo->siguiente = actual;
+    anterior->siguiente = nuevo;
 }
