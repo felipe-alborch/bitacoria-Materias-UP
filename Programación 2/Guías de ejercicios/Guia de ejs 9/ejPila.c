@@ -11,7 +11,6 @@ y calcular:
 6) Ingresar un numero por teclado y calcular la cantidad de veces que está en la pila. Si no está, mostrar una leyenda
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,38 +23,49 @@ typedef struct tiponodo {
 nodo* crear_nodo(int numero);
 void apilar(nodo **pila, nodo *nuevoNodo);
 nodo desapilar(nodo **pila);
-void mostrar(nodo nodoActual);
+void mostrar(nodo nodoActual, int primerElemento, int *sumatoria, int *contador);
 
 int main() {
     nodo *pila = NULL;
-    int numero, contadorMultiplosDe3 = 0;
+    int numero, primerElemento;
+    int sumatoria = 0, contador = 0;
 
     // Cargar la pila
+    printf("--- ARMANDO LA PILA ---\n\n");
+
     printf("Ingrese un numero: ");
     scanf("%d", &numero);
 
-    while(numero != 0) {
-        if(numero % 3 == 0)
-            contadorMultiplosDe3 += 1;
-        
-        apilar(&pila, crear_nodo(numero));
-        
-        printf("Ingrese un numero: ");
-        scanf("%d", &numero);
-    }
+    if(numero != 0) {
+        primerElemento = numero;
 
-    // Desapilar y mostrar los elementos
-    printf("\nElementos de la pila:\n");
+        while(numero != 0) {
+            apilar(&pila, crear_nodo(numero));
 
-    while(pila != NULL)
-        mostrar(desapilar(&pila));
+            printf("Ingrese un numero: ");
+            scanf("%d", &numero);
+        }
 
-    printf("La cantidad de multiplos de 3 es: %d", contadorMultiplosDe3);
+        // Desapilar y realizar los calculos
+        printf("\n--- DESARMANDO LA PILA ---\n\n");
+
+        while(pila != NULL)
+            mostrar(desapilar(&pila), primerElemento, &sumatoria, &contador);
+
+        // Mostrar resultado
+        if(contador > 0)
+            printf("\nLa sumatoria es: %d\n", sumatoria);
+        else
+            printf("\nNo hay numeros mayores al primer elemento.\n");
+
+    } 
+    else
+        printf("No se ingresaron numeros en la pila.\n");
 
     return 0;
 }
 
-// Crear un nodo
+// Crear nodo
 nodo* crear_nodo(int numero) {
     nodo *nuevoNodo;
 
@@ -66,13 +76,13 @@ nodo* crear_nodo(int numero) {
     return nuevoNodo;
 }
 
-// Apilar un nodo
+// Apilar
 void apilar(nodo **pila, nodo *nuevoNodo) {
     nuevoNodo->SIG = *pila;
     *pila = nuevoNodo;
 }
 
-// Desapilar un nodo
+// Desapilar
 nodo desapilar(nodo **pila) {
     nodo *nodoAuxiliar;
     nodo datos;
@@ -86,7 +96,12 @@ nodo desapilar(nodo **pila) {
     return datos;
 }
 
-// Mostrar un nodo
-void mostrar(nodo nodoActual) {
+// Mostrar y calcular sumatoria
+void mostrar(nodo nodoActual, int primerElemento, int *sumatoria, int *contador) {
     printf("%d\n", nodoActual.A);
+
+    if(nodoActual.A > primerElemento) {
+        *sumatoria += nodoActual.A;
+        (*contador)++;
+    }
 }
