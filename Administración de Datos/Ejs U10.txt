@@ -1,0 +1,57 @@
+1)
+
+SELECT r.cod_rubro,
+       r.descripcion,
+       MAX(a.precio) AS mejor,
+       COUNT(a.nroartic) AS cantidad_articulos
+FROM rubro r
+INNER JOIN articulo a ON a.rubro = r.cod_rubro
+GROUP BY r.cod_rubro, r.descripcion;
+
+
+EXPLICACIÓN: 
+  Primero, relacioné RUBRO con ARTICULO mediante a.rubro = r.cod_rubro para saber qué artículos pertenecen a cada rubro. Después, usé GROUP BY para obtener una fila por rubro. El código identifica al rubro y la descripción también se incluye en el agrupamiento porque se muestra directamente en el SELECT.
+Dentro de cada grupo, MAX(a.precio) obtiene el precio más alto y COUNT(a.nroartic) cuenta los artículos. Así, cada fila muestra el código, la descripción, el precio máximo y la cantidad de artículos del rubro.
+Si la consigna incluye rubros sin artículos, corresponde usar LEFT JOIN. Esos rubros aparecen con cantidad 0 y precio máximo NULL.
+
+
+2)
+
+SELECT r.*
+FROM rubro r
+INNER JOIN articulo a ON a.rubro = r.cod_rubro
+GROUP BY r.cod_rubro, r.descripcion
+HAVING AVG(a.precio) > 800
+   AND COUNT(a.nroartic) > 2;
+
+
+3)
+
+SELECT c.*, COUNT(f.nrofactura) AS cantidad_de_facturas
+FROM cliente c
+INNER JOIN factura f ON f.cliente = c.nrocli
+WHERE EXISTS (
+    SELECT 1
+    FROM factura f2
+    INNER JOIN detalle d ON d.nrofactura = f2.nrofactura
+    WHERE f2.cliente = c.nrocli
+      AND d.articulo IN (4000, 4010)
+)
+GROUP BY c.nrocli, c.nyape, c.domicilio, c.localidad, c.saldocli;
+
+
+4)
+
+SELECT c.*, COUNT(f.nrofactura) AS cantidad_de_facturas
+FROM cliente c
+INNER JOIN factura f ON f.cliente = c.nrocli
+WHERE EXISTS (
+    SELECT 1
+    FROM factura f2
+    INNER JOIN detalle d ON d.nrofactura = f2.nrofactura
+    INNER JOIN articulo a ON a.nroartic = d.[Artículo]
+    WHERE f2.cliente = c.nrocli
+      AND a.rubro = 1
+)
+GROUP BY c.nrocli, c.nyape, c.domicilio, c.localidad, c.saldocli
+HAVING COUNT(f.nrofactura) > 2;

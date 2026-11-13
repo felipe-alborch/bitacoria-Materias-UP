@@ -1,0 +1,61 @@
+1)
+
+SELECT C.*
+FROM CLIENTE C
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM FACTURA F
+    WHERE F.Cliente = C.Nrocli
+      AND F.Fecha >= '20220101'
+      AND F.Fecha <  '20230101'
+)
+ORDER BY C.Nyape ASC;
+
+
+2) 
+
+SELECT C.*
+FROM CLIENTE C
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM FACTURA F
+    INNER JOIN DETALLE D ON D.Nrofactura = F.Nrofactura
+    WHERE F.Cliente = C.Nrocli
+      AND D.Artículo = 4030
+);
+
+
+3)
+
+SELECT DISTINCT F.*
+FROM FACTURA F
+INNER JOIN DETALLE D ON D.Nrofactura = F.Nrofactura
+INNER JOIN ARTICULO A ON A.Nroartic = D.Artículo
+INNER JOIN RUBRO R ON R.Cod_rubro = A.Rubro
+WHERE R.Descripcion = 'electrodomésticos';
+ 
+
+4)
+
+SELECT C.*, F.*
+FROM CLIENTE C
+FULL OUTER JOIN FACTURA F
+    ON C.Nrocli = F.Cliente;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
