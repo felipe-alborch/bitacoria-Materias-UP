@@ -1,0 +1,37 @@
+1) 
+
+UPDATE a
+SET a.precio = a.precio * 1.25
+FROM ARTICULO a
+INNER JOIN RUBRO r
+    ON r.Cod_rubro = a.Rubro
+WHERE r.Descripcion LIKE 'herramientas%';
+
+
+2)
+
+INSERT INTO RUBRO (Cod_rubro, Descripcion)
+VALUES (15, 'Escaleras');
+
+
+3)
+
+UPDATE DETALLE
+SET Cantidad = Cantidad + 5
+WHERE Nrofactura = 1005
+  AND Renglon = 7
+  AND Articulo = 4040;
+
+
+4)
+
+DELETE FROM ARTICULO
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM DETALLE d
+    WHERE d.Articulo = ARTICULO.Nroartic
+);
+
+
+
+

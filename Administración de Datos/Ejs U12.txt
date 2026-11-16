@@ -1,0 +1,37 @@
+
+CREATE DATABASE Consultorio;
+GO
+
+USE Consultorio;
+GO
+
+CREATE TABLE Paciente (
+    codPaciente INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    fechaNacim DATE NOT NULL
+);
+
+CREATE TABLE Medico (
+    matricula INT PRIMARY KEY,
+    nombreM VARCHAR(50) NOT NULL,
+    apellidoM VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Consulta (
+    nroConsulta INT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    codPaciente INT NOT NULL,
+    matricula INT NOT NULL,
+    diagnostico VARCHAR(255),
+
+    FOREIGN KEY (codPaciente)
+        REFERENCES Paciente(codPaciente)
+        ON DELETE NO ACTION
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (matricula)
+        REFERENCES Medico(matricula)
+        ON DELETE NO ACTION
+        ON UPDATE CASCADE
+);
