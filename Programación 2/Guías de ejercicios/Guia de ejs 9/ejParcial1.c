@@ -9,6 +9,7 @@ mayores al primer elemento ingresado en la pila. Si no hubiera ningún
 número mostrar una leyenda.
 */
 
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,38 +18,49 @@ typedef struct nodo {
     struct nodo *siguiente;
 } nodo;
 
+// Prototipos
 nodo *crearNodo(int numero);
 void apilar(nodo **pila, nodo *nuevoNodo);
 nodo desapilar(nodo **pila);
-void mostrar(nodo nodoAMostrar);
-void calcularSumatoria(nodo **pila, int primerElemento);  
+void mostrar(nodo nodoAMostrar, int primerElemento, int *sumatoria, int *contador);
 
 int main() {
     int numero, primerElemento;
+    int sumatoria = 0, contador = 0;
     nodo *pila = NULL;
 
     printf("--- ARMANDO LA PILA ---\n\n");
+
     printf("Ingrese un numero: ");
     scanf("%d", &numero);
+
     primerElemento = numero;
 
     while(numero != 0) {
         apilar(&pila, crearNodo(numero));
-        
+
         printf("Ingrese un numero: ");
         scanf("%d", &numero);
     }
 
-    printf("\n\n--- CALCULANDO LA SUMATORIA DE LOS ELEMENTOS MAYORES AL PRIMER ELEMENTO INGRESADO DE LA PILA ---\n\n");
-    calcularSumatoria(&pila, primerElemento);
+    if(pila != NULL) {
+        printf("\n--- DESARMANDO LA PILA ---\n\n");
 
-    printf("\n\n--- DESARMANDO LA PILA ---\n\n");
-    while(pila != NULL)
-        mostrar(desapilar(&pila));
-    
+        while(pila != NULL)
+            mostrar(desapilar(&pila), primerElemento, &sumatoria, &contador);
+
+        if(contador > 0)
+            printf("\nLa sumatoria es: %d\n", sumatoria);
+        else
+            printf("\nNo hay numeros mayores al primer elemento.\n");
+    }
+    else
+        printf("\nNo se ingresaron elementos en la pila.\n");
+
     return 0;
 }
 
+// Crear nodo
 nodo *crearNodo(int numero) {
     nodo *nuevoNodo;
 
@@ -59,11 +71,13 @@ nodo *crearNodo(int numero) {
     return nuevoNodo;
 }
 
+// Apilar
 void apilar(nodo **pila, nodo *nuevoNodo) {
     nuevoNodo->siguiente = *pila;
     *pila = nuevoNodo;
 }
 
+// Desapilar
 nodo desapilar(nodo **pila) {
     nodo *nodoAux;
     nodo datos;
@@ -78,35 +92,13 @@ nodo desapilar(nodo **pila) {
     return datos;
 }
 
-void mostrar(nodo nodoAMostrar) {
+// Mostrar y calcular la sumatoria
+void mostrar(nodo nodoAMostrar, int primerElemento, int *sumatoria, int *contador) {
+
     printf("%d\n", nodoAMostrar.num);
-}
 
-
-void calcularSumatoria(nodo **pila, int primerElemento) {
-    nodo *pilaAux = NULL;
-    nodo nodoActual;
-    int sumatoria = 0, contador = 0;
-
-    while(*pila != NULL) {
-        nodoActual = desapilar(pila);
-
-        if(nodoActual.num > primerElemento) {
-            sumatoria += nodoActual.num;
-            contador++;
-        }
-
-        apilar(&pilaAux, crearNodo(nodoActual.num));
+    if(nodoAMostrar.num > primerElemento) {
+        *sumatoria += nodoAMostrar.num;
+        *contador += 1;
     }
-
-    // Recuperar los elementos de la pila original
-    while(pilaAux != NULL) {
-        nodoActual = desapilar(&pilaAux);
-        apilar(pila, crearNodo(nodoActual.num));
-    }
-
-    if(contador > 0)
-        printf("La sumatoria es: %d\n", sumatoria);
-    else
-        printf("No hay numeros mayores al primer elemento.\n");
 }

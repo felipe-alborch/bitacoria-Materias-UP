@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -9,10 +10,12 @@ typedef struct nodo {
     struct nodo *siguiente;
 } nodo;
 
+// Prototipos
 nodo *crearNodo(int numero);
 void apilar(nodo **pila, nodo *nuevoNodo);
 nodo desapilar(nodo **pila);
 void mostrar(nodo nodoActual);
+
 void asignarValorI(nodo **pila, int n);
 void eliminarValorZ(nodo **pila);
 void invertirElementosPila(nodo **pila);
@@ -32,24 +35,30 @@ int main() {
         scanf("%d", &numero);
     }
 
-    printf("\n\nIngrese un valor N: ");
-    scanf("%d", &n);
-    asignarValorI(&pila, n);
+    if(pila != NULL) {
+        printf("\nIngrese un valor N: ");
+        scanf("%d", &n);
 
-    printf("\n\n--- ELIMINANDO VALOR Z ---\n\n");
-    eliminarValorZ(&pila);
+        asignarValorI(&pila, n);
 
-    printf("\n\n--- INVIRTIENDO LOS ELEMENTOS DE LA PILA ---\n\n");
-    invertirElementosPila(&pila);
+        printf("\n--- ELIMINANDO VALOR Z ---\n");
+        eliminarValorZ(&pila);
 
-    printf("--- DESARMANDO LA PILA ---\n\n");
-    while(pila != NULL) {
-        mostrar(desapilar(&pila));
+        printf("\n--- INVIRTIENDO LA PILA ---\n");
+        invertirElementosPila(&pila);
+
+        printf("\n--- DESARMANDO LA PILA ---\n");
+
+        while(pila != NULL)
+            mostrar(desapilar(&pila));
     }
-    
+    else
+        printf("No se ingresaron elementos.\n");
+
     return 0;
 }
 
+// Crear nodo
 nodo *crearNodo(int numero) {
     nodo *nuevoNodo;
 
@@ -60,13 +69,16 @@ nodo *crearNodo(int numero) {
     return nuevoNodo;
 }
 
+// Apilar
 void apilar(nodo **pila, nodo *nuevoNodo) {
     nuevoNodo->siguiente = *pila;
     *pila = nuevoNodo;
 }
 
+// Desapilar
 nodo desapilar(nodo **pila) {
-    nodo *nodoAuxiliar, datos;
+    nodo *nodoAuxiliar;
+    nodo datos;
 
     datos = **pila;
     nodoAuxiliar = *pila;
@@ -77,68 +89,74 @@ nodo desapilar(nodo **pila) {
     return datos;
 }
 
+// Mostrar
 void mostrar(nodo nodoActual) {
     printf("%d\n", nodoActual.A);
 }
 
-
+// Ejercicio 1: Asignar valor I a la posicion N
 void asignarValorI(nodo **pila, int n) {
     nodo *pilaAuxiliar = NULL;
     nodo nodoActual;
     int contador = 1;
 
-    // Desapilar hasta llegar a la posicion N
-    while(*pila != NULL && contador < n) {
+    if(n < 1) {
+        printf("La posicion ingresada no es valida.\n");
+    }
+    else {
+        while(*pila != NULL && contador < n) {
+            nodoActual = desapilar(pila);
+            apilar(&pilaAuxiliar, crearNodo(nodoActual.A));
+
+            contador++;
+        }
+
+        if(*pila != NULL) {
+            nodoActual = desapilar(pila);
+            nodoActual.A = I;
+
+            apilar(pila, crearNodo(nodoActual.A));
+        }
+        else
+            printf("La posicion ingresada no existe.\n");
+
+        while(pilaAuxiliar != NULL) {
+            nodoActual = desapilar(&pilaAuxiliar);
+            apilar(pila, crearNodo(nodoActual.A));
+        }
+    }
+}
+
+// Ejercicio 2: Eliminar el primer nodo con valor Z
+void eliminarValorZ(nodo **pila) {
+    nodo *pilaAuxiliar = NULL;
+    nodo nodoActual;
+
+    while(*pila != NULL && (*pila)->A != Z) {
         nodoActual = desapilar(pila);
         apilar(&pilaAuxiliar, crearNodo(nodoActual.A));
-
-        contador++;
     }
 
-    // Modificar el elemento en la posicion N
-    if(*pila != NULL) {
+    if(*pila != NULL)
         nodoActual = desapilar(pila);
-        nodoActual.A = I;
-
-        apilar(pila, crearNodo(nodoActual.A));
-    } 
     else
-        printf("La posicion ingresada no existe.\n");
+        printf("No existe el valor Z en la pila.\n");
 
-    // Recuperar los elementos originales
     while(pilaAuxiliar != NULL) {
         nodoActual = desapilar(&pilaAuxiliar);
         apilar(pila, crearNodo(nodoActual.A));
     }
 }
 
-void eliminarValorZ(nodo **pila) {
-    nodo *pilaAux = NULL, nodoActual;
-
-    while(*pila != NULL && (*pila)->A != Z) {
-        nodoActual = desapilar(pila);
-        apilar(&pilaAux, crearNodo(nodoActual.A));
-    }
-
-    if(*pila != NULL)
-        nodoActual = desapilar(pila);
-    else
-        printf("No existe ese valor en la pila.\n");
-
-    while(pilaAux != NULL) {
-        nodoActual = desapilar(&pilaAux);
-        apilar(pila, crearNodo(nodoActual.A));
-    }
-}
-
+// Ejercicio 3: Invertir la pila
 void invertirElementosPila(nodo **pila) {
-    nodo *pilaAux = NULL;
+    nodo *pilaAuxiliar = NULL;
     nodo nodoActual;
 
     while(*pila != NULL) {
         nodoActual = desapilar(pila);
-        apilar(&pilaAux, crearNodo(nodoActual.A));
+        apilar(&pilaAuxiliar, crearNodo(nodoActual.A));
     }
 
-    *pila = pilaAux;
+    *pila = pilaAuxiliar;
 }
